@@ -1,0 +1,5 @@
+./llm-scraper/.env
+**/__pycache__/
+**/.ipynb_checkpoints/
+./llm-scraper/venv/
+.DS_Store
