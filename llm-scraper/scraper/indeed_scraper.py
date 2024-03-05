@@ -40,12 +40,17 @@ def get_id_from(card):
 def get_card_infos(cards):
   card_texts = []
   for card in cards:
-    card_elements = extract_text_from_card(card)
-    job_id = get_id_from(card)
-    id_text = f'job id: {job_id}'
-    card_elements.append(id_text)
-    card_texts.append(card_elements)
+    card_text = get_card_info(card)
+    card_texts.append(card_text)
   return card_texts
+
+def get_card_info(card):
+  card_elements = extract_text_from_card(card)
+  job_id = get_id_from(card)
+  id_text = f'job id: {job_id}'
+  card_elements.append(id_text)
+  return card_elements
+  
 
 def build_text(card_infos):
   card_info_strs = ['\n'.join(info) for info in card_infos]
@@ -58,13 +63,6 @@ def retrieve_text(position, location, idx):
   combined_text = build_text(card_infos)
   return combined_text
   
-def directory_name_builder(position, location, directory = '../data/text_docs', date = 'today'):
-  full_dir = f'{directory}/{position}/{location}'.replace(' ', '_').lower()
-  if date == 'today':
-    date = datetime.today().strftime('%Y-%m-%d')
-    full_dir = f'{full_dir}/{date}'
-  return full_dir
-
 def write_to_file(text, position, location, idx = 0, directory = '../data/text_docs'):
   full_dir = directory_name_builder(position, location, directory)
   filename = f'{full_dir}/results_{idx}.txt'.replace(' ', '_').lower()
@@ -78,5 +76,15 @@ def retrieve_and_write(position, location, idx, directory = '../text_docs'):
   write_to_file(combined_text, position, location, idx, directory)
 
 def retrieve_and_write_pages(position, location, pages = 5):
-  for i in range(pages):
+  step_size = 15
+  for i in range(pages*step_size, step_size):
     retrieve_and_write(position, location, i)
+
+def directory_name_builder(position, location, directory = '../data/text_docs', date = 'today'):
+  full_dir = f'{directory}/{position}/{location}'.replace(' ', '_').lower()
+  if date == 'today':
+    date = datetime.today().strftime('%Y-%m-%d')
+    full_dir = f'{full_dir}/{date}'
+  else: 
+    full_dir = f'{full_dir}/{date}'
+  return full_dir

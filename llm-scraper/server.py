@@ -2,8 +2,9 @@ from flask import jsonify
 
 from app import create_app, db
 from app.models import Position, Scraping
+from settings import dev_db
 
-app = create_app()
+app = create_app(dev_db)
 
 @app.shell_context_processor
 def make_shell_context():
