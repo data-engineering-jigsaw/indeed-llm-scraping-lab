@@ -2,6 +2,7 @@ import json
 import os
 
 from openai import OpenAI
+
 from settings import open_ai_api_key
 
 client = OpenAI(
@@ -29,11 +30,6 @@ def build_prompt(file_text):
     'max_salary': 182490, 'city': 'New York',
         'state': 'NY', 'zipcode': None, 'presence': 'unknown'}
 
-    ex_2 = {'job_id': 'e3caf5184f8a7512', 'job_title': 'Senior Data Engineer',
-    'company_name': 'Keyrus USA', 'seniority_level': 'senior',
-    'min_salary': None, 'max_salary': None, 'city': 'New York',
-    'state': 'NY', 'zipcode': '10018', 'presence': 'hybrid'}
-
     prompt = f"""Format in json, the job_title, company_name, min_salary, max_salary, location, and presence as in-person, remote, hybrid or unknown of each of the jobs in the context.
 
     The json schema should include: 
@@ -41,6 +37,7 @@ def build_prompt(file_text):
     {JSON_SCHEMAS}
 
     Example:
+
 
     Senior Data Engineer
     Disney Entertainment & ESPN Technology
