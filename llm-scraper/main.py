@@ -8,8 +8,9 @@ from scraper.indeed_scraper import (directory_name_builder,
 
 position = 'data engineer'
 location = 'United States'
-idx = 0
-retrieve_and_write_pages(position, location, pages = 5)
+
+file_names = retrieve_and_write_pages(position, location, pages = 5)
+files_to_db(file_names)
 # generate_directory
 # dir_to_db(dir_name)
 

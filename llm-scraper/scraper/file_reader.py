@@ -3,10 +3,16 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+
 from app import create_app, db
 from app.models import *
 from scraper.json_builder import *
 
+
+def read_file(file):
+    f = open(file, "r")
+    text = f.read()
+    return text
 
 def file_to_df(file_name):
     file_text = read_file(file_name)
@@ -20,11 +26,18 @@ def file_to_df(file_name):
         df = df.replace({np.nan: None, 'unknown': None, '': None})
         return df
 
-def file_to_db(file_name):
-    app = create_app()
+def parse_from_file_name(file_name):
+    last_elements = file_name.split('/')[-4:]
+    position, location, date, file_name_ext = last_elements
+    file_name, ext = file_name_ext.split('.')
+    prefix, idx = file_name.split('_')
+    return {'position': position, 'location': location, 'date': date, 'job_idx': idx}
+
+def file_to_db(file_name, db_conn):
+    app = create_app(db_conn)
     
     df = file_to_df(file_name)
-    
+    positions = []
     with app.app_context():
         scraping_attrs = parse_from_file_name(file_name)
         scraping = Scraping(**scraping_attrs)
@@ -35,15 +48,23 @@ def file_to_db(file_name):
             pos_attrs = row.to_dict()
             position = Position(**pos_attrs)
             position.scraping = scraping
-            
-            db.session.add(position)
-            db.session.commit()
+            existing_position = db.session.query(Position).filter_by(job_id = position.job_id).first()
+            if not existing_position:
+                
+                db.session.add(position)
+                db.session.commit()
+                positions.append(position)
+    return positions
 
-def parse_from_file_name(file_name):
-    pref, relative_dir, docs, position, location, date, file_name_ext = file_name.split('/')
-    file_name, ext = file_name_ext.split('.')
-    prefix, idx = file_name.split('_')
-    return {'position': position, 'location': location, 'date': date, 'job_idx': idx}
+def files_to_db(file_names):
+    position_lists = [file_to_db(file_name, db_conn) for file_name in file_names]
+    return sum(position_lists,[])
+
+    
+
+
+
+
 
 def list_files(directory):
     file_names = []
@@ -52,25 +73,3 @@ def list_files(directory):
             file_names.append(os.path.join(root, file))
     return file_names
 
-# TODO change to dir_to_db
-def dir_to_dfs(dir_name):
-    file_names = list_files(dir_name)
-    dfs = [file_to_df(file_name) for file_name in file_names]
-    return list(zip(file_names, dfs))
-
-
-
-def read_file(file):
-    f = open(file, "r")
-    text = f.read()
-    return text
-
-
-
-
-
-
-
-# first just save it to a directory
-# first create the search, and save it
-# then for each of the files, store the search id

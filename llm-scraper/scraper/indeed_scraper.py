@@ -70,15 +70,21 @@ def write_to_file(text, position, location, idx = 0, directory = '../data/text_d
     os.makedirs(full_dir)
   with open(filename, 'w') as file:
     file.write(text)
+  return filename
     
 def retrieve_and_write(position, location, idx, directory = '../text_docs'):
   combined_text = retrieve_text(position, location, idx)
-  write_to_file(combined_text, position, location, idx, directory)
+  file_name = write_to_file(combined_text, position, location, idx, directory)
+  return file_name
 
 def retrieve_and_write_pages(position, location, pages = 5):
   step_size = 15
+  file_names = []
   for i in range(pages*step_size, step_size):
-    retrieve_and_write(position, location, i)
+    file_name = retrieve_and_write(position, location, i)
+    file_names.append(file_name)
+  file_names
+  
 
 def directory_name_builder(position, location, directory = '../data/text_docs', date = 'today'):
   full_dir = f'{directory}/{position}/{location}'.replace(' ', '_').lower()
