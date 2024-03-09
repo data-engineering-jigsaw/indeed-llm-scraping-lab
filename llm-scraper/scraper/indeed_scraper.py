@@ -23,10 +23,7 @@ def get_indeed_html(position = 'data engineer', location = 'United States', star
 
     
 def get_job_cards(position = 'data engineer', location = 'United States', start = 0):
-  html_string = get_indeed_html(position = position, location = location, start = start)
-  soup = bs(html_string, 'html.parser')
-  tds = soup.find_all('td', {'class': 'resultContent'})
-  return tds  
+  pass
 
 def extract_text_from_card(card):
   text_elements = card.find_all(string = True)
@@ -35,27 +32,16 @@ def extract_text_from_card(card):
   return elements
 
 def get_id_from(card):
-  return card.find('a')['data-jk']
-
-def get_card_infos(cards):
-  card_texts = []
-  for card in cards:
-    card_text = get_card_info(card)
-    card_texts.append(card_text)
-  return card_texts
+  pass
 
 def get_card_info(card):
-  card_elements = extract_text_from_card(card)
-  job_id = get_id_from(card)
-  id_text = f'job id: {job_id}'
-  card_elements.append(id_text)
-  return card_elements
-  
+  pass
+
+def get_card_infos(cards):
+  pass
 
 def build_text(card_infos):
-  card_info_strs = ['\n'.join(info) for info in card_infos]
-  info_strs_texts = '\n\n'.join(card_info_strs)
-  return info_strs_texts
+  pass
 
 def retrieve_text(position, location, idx):
   cards = get_job_cards(position = position, location = location, start = idx)
@@ -73,6 +59,7 @@ def write_to_file(text, position, location, idx = 0, directory = '../data/text_d
   return filename
     
 def retrieve_and_write(position, location, idx, directory = '../text_docs'):
+  
   combined_text = retrieve_text(position, location, idx)
   file_name = write_to_file(combined_text, position, location, idx, directory)
   return file_name
@@ -80,17 +67,13 @@ def retrieve_and_write(position, location, idx, directory = '../text_docs'):
 def retrieve_and_write_pages(position, location, pages = 5):
   step_size = 15
   file_names = []
-  for i in range(pages*step_size, step_size):
+  
+  for i in range(0, pages*step_size, step_size):
+    
     file_name = retrieve_and_write(position, location, i)
     file_names.append(file_name)
-  file_names
+  return file_names
   
 
 def directory_name_builder(position, location, directory = '../data/text_docs', date = 'today'):
-  full_dir = f'{directory}/{position}/{location}'.replace(' ', '_').lower()
-  if date == 'today':
-    date = datetime.today().strftime('%Y-%m-%d')
-    full_dir = f'{full_dir}/{date}'
-  else: 
-    full_dir = f'{full_dir}/{date}'
-  return full_dir
+  pass

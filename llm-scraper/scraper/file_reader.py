@@ -15,56 +15,18 @@ def read_file(file):
     return text
 
 def file_to_df(file_name):
-    file_text = read_file(file_name)
-    if len(file_text) < 20:
-        return pd.DataFrame()
-    else:
-        prompt = build_prompt(file_text)
-        
-        json_data = return_json_from(prompt)['jobs']
-        df = pd.DataFrame(json_data)
-        df = df.replace({np.nan: None, 'unknown': None, '': None})
-        return df
+    pass
 
 def parse_from_file_name(file_name):
-    last_elements = file_name.split('/')[-4:]
-    position, location, date, file_name_ext = last_elements
-    file_name, ext = file_name_ext.split('.')
-    prefix, idx = file_name.split('_')
-    return {'position': position, 'location': location, 'date': date, 'job_idx': idx}
+    pass
 
 def file_to_db(file_name, db_conn):
     app = create_app(db_conn)
-    
-    df = file_to_df(file_name)
-    positions = []
     with app.app_context():
-        scraping_attrs = parse_from_file_name(file_name)
-        scraping = Scraping(**scraping_attrs)
-        db.session.add(scraping)
-        db.session.commit()
-        
-        for idx, row in df.iterrows():
-            pos_attrs = row.to_dict()
-            position = Position(**pos_attrs)
-            position.scraping = scraping
-            existing_position = db.session.query(Position).filter_by(job_id = position.job_id).first()
-            if not existing_position:
-                
-                db.session.add(position)
-                db.session.commit()
-                positions.append(position)
-    return positions
+        pass
 
-def files_to_db(file_names):
-    position_lists = [file_to_db(file_name, db_conn) for file_name in file_names]
-    return sum(position_lists,[])
-
-    
-
-
-
-
+def files_to_db(file_names, db_conn):
+    pass
 
 def list_files(directory):
     file_names = []

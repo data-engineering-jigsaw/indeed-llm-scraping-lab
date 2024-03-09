@@ -8,16 +8,5 @@ from app.models import *
 
 
 def create_app(db_conn):
+    pass
     
-    app = Flask(__name__)
-    app.config['SQLALCHEMY_DATABASE_URI'] = db_conn
-    db.init_app(app)
-
-    
-    @app.route('/positions')
-    def positions():
-        positions = db.session.query(models.Position).all()
-        positions_dicts = [position.to_dict() for position in positions]
-        return jsonify(positions_dicts)
-
-    return app
